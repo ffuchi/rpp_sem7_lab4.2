@@ -29,7 +29,10 @@ jobs:
         for file in "${files_to_copy[@]}"; do
           cp -r "./${file}" "./public/"
         done
-        
+
+    - name: List files in public directory
+      run: ls -la ./public
+
     - name: Deploy to GitHub Pages
       uses: peaceiris/actions-gh-pages@v4
       with:
