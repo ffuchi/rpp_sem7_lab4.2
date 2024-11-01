@@ -11,9 +11,12 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
+    - name: Create public directory
+      run: mkdir -p ./public  # Создаем папку public
+
     - name: Create versioned directory
       run: |
-        VERSION=${{ github.event.release.tag }}
+        VERSION=${{ github.ref_name }}
         VERSION_DIR="./public/v${VERSION}"
         mkdir -p "$VERSION_DIR"
 
@@ -29,9 +32,6 @@ jobs:
         for file in "${files_to_copy[@]}"; do
           cp -r "./${file}" "./public/"
         done
-
-    - name: List files in public directory
-      run: ls -la ./public/v
 
     - name: Deploy to GitHub Pages
       uses: peaceiris/actions-gh-pages@v4
