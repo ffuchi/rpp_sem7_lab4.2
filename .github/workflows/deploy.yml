@@ -11,14 +11,29 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
+    - name: Create versioned directory
+      run: |
+        VERSION=${{ github.event.release.tag }}
+        VERSION_DIR="./public/v${VERSION}"
+        mkdir -p "$VERSION_DIR"
+
+        # Список файлов и каталогов для копирования
+        files_to_copy=("en" "ru" "index.html")
+
+        # Копирование в папку с версией
+        for file in "${files_to_copy[@]}"; do
+          cp -r "./${file}" "$VERSION_DIR/"
+        done
+
+        # Копирование в корневую папку public
+        for file in "${files_to_copy[@]}"; do
+          cp -r "./${file}" "./public/"
+        done
+        
     - name: Deploy to GitHub Pages
       uses: peaceiris/actions-gh-pages@v3
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_dir: ./public
         publish_branch: gh-pages
-
-    - name: Create versioned directory
-      run: |
-        mkdir -p v${{ github.event.release.tag }}
-        cp -r ./public/* ./v${{ github.event.release.tag }}/
+        
